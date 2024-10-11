@@ -1,0 +1,57 @@
+
+ services:
+  mysqldb:
+    image: mysql:8.0.28
+    platform: linux/amd64
+    env_file:
+      - .env
+    restart: always
+    environment:
+      - MYSQL_DATABASE=${MYSQLDB_DATABASE}
+      - MYSQL_ROOT_PASSWORD=${MYSQLDB_ROOT_PASSWORD}
+      - TZ=Europe/Moscow
+    command:
+      --character-set-server=utf8mb4
+      --collation-server=utf8mb4_unicode_ci
+    ports:
+      - 3307:3306
+    volumes:
+      - mysqldb:/var/lib/mysql
+  flyway:
+    image: dhoer/flyway:alpine
+    platform: linux/amd64
+    command: -url=jdbc:mysql://mysqldb?allowPublicKeyRetrieval=true&serverTimezone=UTC&useSSL=true&verifyServerCertificate=false -schemas=telegrambots -user=root -password=${MYSQLDB_ROOT_PASSWORD} -connectRetries=60 migrate
+    volumes:
+      - .:/flyway/sql
+    env_file:
+      - .env
+    depends_on:
+      - mysqldb
+  app:
+    env_file:
+      - .env
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: on-failure:10
+    ports:
+      - "8080:8080"
+    environment:
+      - MYSQLDB_USER=${MYSQLDB_USER}
+      - MYSQLDB_ROOT_PASSWORD=${MYSQLDB_ROOT_PASSWORD}
+      - MYSQLDB_USER_PASSWORD=${MYSQLDB_USER_PASSWORD}
+      - MYSQLDB_DATABASE=${MYSQLDB_DATABASE}
+      - MYSQLDB_LOCAL_PORT=${MYSQLDB_LOCAL_PORT}
+      - MYSQLDB_PORT=${MYSQLDB_PORT}
+      - BOT_NAME=${BOT_NAME}
+      - BOT_TOKEN=${BOT_TOKEN}
+      - FLYWAY_ENABLED=${FLYWAY_ENABLED}
+      - FLYWAY_LOCATIONS=${FLYWAY_LOCATIONS}
+      - TZ=Europe/Moscow
+      - DNS_RESOLVERS=8.8.4.4,8.8.8.8
+    depends_on:
+      - flyway
+      - mysqldb
+ volumes:
+  mysqldb:
+
