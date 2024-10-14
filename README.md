@@ -73,28 +73,28 @@ Docker:
  
 - sudo apt upgrade
  
-- Устанавливаем Docker
-curl -fsSL https://get.docker.com -o get-docker.sh
-sudo sh get-docker.sh
+- Устанавливаем Docker:
+- curl -fsSL https://get.docker.com -o get-docker.sh
+- sudo sh get-docker.sh
  
-- Создаем директорию проектов
-mkdir projects
-cd projects
+- Создаем директорию проектов:
+- mkdir projects
+- cd projects
  
-- Клонируем репозиторий в созданную папку projects
-git clone  – адрес с github укажите свой (https://github.com/AlimeAmetova/TelegramBotRates.git)
+- Клонируем репозиторий в созданную папку projects:
+- git clone  – адрес с github укажите свой (https://github.com/AlimeAmetova/TelegramBotRates.git)
  
-- входим в репозиторий
-cd имя_папки_проекта в нашем случае это TelegramBotRates
+- входим в репозиторий:
+- cd имя_папки_проекта в нашем случае это TelegramBotRates
  
 - открываем файл.env:
-vim .env и указываем токен бота и другие переменные. После внесения изменений нажимаем "ESC" для выхода в "командный режим", вводим ":" (двоеточие), вводим "wq" (write-quit) - для сохранения изменений и выхода; "q!" - для выхода без сохранения, и нажимаем "Enter".
+- vim .env и указываем токен бота и другие переменные. После внесения изменений нажимаем "ESC" для выхода в "командный режим", вводим ":" (двоеточие), вводим "wq" (write-quit) - для сохранения изменений и выхода; "q!" - для выхода без сохранения, и нажимаем "Enter".
  
 - Запускаем docker compose:
-sudo docker compose up -d --build   
+- sudo docker compose up -d --build   
  
 - Смотреть логи введите:
-docker compose logs -f
+- docker compose logs -f
 
 
 
