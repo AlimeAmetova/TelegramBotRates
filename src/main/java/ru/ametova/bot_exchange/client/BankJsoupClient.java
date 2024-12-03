@@ -18,8 +18,7 @@ public class BankJsoupClient {
 
     @Value("${bank.currency.rates.jsoup.url}")
     private String bankCurrencyRatesJsoupUrl;
-    private static final String BANK_ROW_SELECTOR = "#app > div.dTSkA6xB.commercial-branding > div.AuRBdDZg " +
-                                                    "> div.CG7gMlX9 > div.FsqCLeET > div.jOWso09k > table > tbody > tr";
+    private static final String BANK_ROW_SELECTOR = "#app";
 
     // DecimalFormat df = new DecimalFormat("#00.00");
 
@@ -41,13 +40,14 @@ public class BankJsoupClient {
         BankExchangeRates bankExchangeRates;
         List<BankExchangeRates> ratesList = new ArrayList<>();
         try {
-            Document document = Jsoup.connect(bankCurrencyRatesJsoupUrl).get();
-            for (int i = 1; i <= 5; i++) {
-                Element bankRow = document.select(BANK_ROW_SELECTOR).get(i);
-                String[] usd = parseUsdRates(bankRow);
-                String[] eur = parseEurRates(bankRow);
+            org.jsoup.nodes.Document document = Jsoup.connect(bankCurrencyRatesJsoupUrl).get();
+            Element element = document.select(BANK_ROW_SELECTOR).first();
+            for (int i =1; i <= 5; i++){
+                String bank = element.select("td").select("a").get(i).text();
+                String[] usd = element.select("td > div:nth-child(2) > div:nth-child(1)").get(i).text().split(" ");
+                String[] eur = element.select("td > div:nth-child(2) > div:nth-child(2)").get(i).text().split(" ");
                 bankExchangeRates = BankExchangeRates.builder()
-                        .bankName(parseBankName(bankRow))
+                        .bankName(bank)
                         .buyUSD(Double.parseDouble(usd[0]))
                         .sellUSD(Double.parseDouble(usd[1]))
                         .buyEUR(Double.parseDouble(eur[0]))
@@ -60,17 +60,6 @@ public class BankJsoupClient {
         } return ratesList;
     }
 
-
-    private static String parseBankName(Element bankRow) {
-        return bankRow.select("td > div:nth-child(1) > a").text();
-    }
-
-    private String [] parseUsdRates(Element bankRow) {
-        return bankRow.select("td > div:nth-child(2) > div:nth-child(1)").text().split(" ");
-    }
-
-    private String [] parseEurRates(Element bankRow) {
-        return bankRow.select("td > div:nth-child(2) > div:nth-child(2)").text().split(" ");
-    }
-
 }
+
+

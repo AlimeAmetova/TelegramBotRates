@@ -1,0 +1,43 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+header Схема сохранения Users в базу
+footer Page %page% of %lastpage%
+'newpage используется для разбиения диаграм на несколько изображений
+
+
+title Простая диаграмма Телеграм бота курса валют. Сохраняем User в Database
+skinparam responseMessageBelowArrow true
+skinparam MaxMessageSize 150
+
+
+skinparam sequence {
+ParticipantPadding 35
+MessageAlign center
+
+}
+'можно прописать через массив
+autonumber
+actor "Front" as user order 10
+box "Bot" #LightBlue
+database "Database" as db order 30 #99FF99
+participant "Telegram Bot" as bot order 20
+end box
+
+user -> bot++: Нажимет кнопку Start
+group Сохраняем Пользователя
+bot -> db++: Проверяет User в базе
+db--> bot--: Сохраняет User
+else some kind of failure
+end
+note left
+Проверяем
+сохранен ли User
+end note
+bot-> user--: Приветсвенное сообщение
+group Пользователь заблокировал бота
+bot -> db++ : User заблокировал бота
+db --> bot--: User удален
+end
+
+@enduml
