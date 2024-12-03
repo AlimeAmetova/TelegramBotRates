@@ -1,7 +1,6 @@
 package ru.ametova.bot_exchange.client;
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -43,6 +42,7 @@ public class BankJsoupClient {
             org.jsoup.nodes.Document document = Jsoup.connect(bankCurrencyRatesJsoupUrl).get();
             Element element = document.select(BANK_ROW_SELECTOR).first();
             for (int i =1; i <= 5; i++){
+                assert element != null;
                 String bank = element.select("td").select("a").get(i).text();
                 String[] usd = element.select("td > div:nth-child(2) > div:nth-child(1)").get(i).text().split(" ");
                 String[] eur = element.select("td > div:nth-child(2) > div:nth-child(2)").get(i).text().split(" ");
